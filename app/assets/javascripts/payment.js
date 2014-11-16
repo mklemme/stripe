@@ -53,7 +53,7 @@ $(function() {
 
     Stripe.createToken(card, function(status, response) {
       if (status === 200) {
-        $("#user_last_4_digits").val(response.card.last4);
+        $("#user_last_4").val(response.card.last4);
         $("#user_stripe_token").val(response.id);
         form.submit();
       } else {

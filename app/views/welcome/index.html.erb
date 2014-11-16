@@ -1,4 +1,4 @@
 <h1>Welcome!</h1>
 <% if current_user %>
-  <%= render :partial => 'payment/form' %>
+  <%= link_to("New Payment", payment_index_path) %>
 <% end %>
