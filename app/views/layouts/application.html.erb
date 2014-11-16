@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Map</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+  <script>
+  // This identifies your website in the createToken call below
+    Stripe.setPublishableKey('<%= Figaro.env.stripe_publishable_key %>');
+  // ...
+  </script>
+  <link rel="stylesheet" href="http://framework.getsprk.com/poptart/v1.0/cherry.min.css" media="screen">
+  <%= csrf_meta_tags %>
+
+</head>
+<body class="poptart">
+  <% if current_user %>
+    <%= link_to('logout', destroy_user_session_path, :method => :delete, :confirm => 'Are you sure?') %>
+  <% else %>
+    <%= link_to('login', new_user_session_path) %> or <%= link_to('signup', new_user_registration_path) %>
+  <% end %>
+
+<% flash.each do |key, value| %>
+  <% if key == "notice" %>
+    <%= content_tag :div, value, class: "text-center alert alert-warning" %>
+  <% elsif key == "alert" %>
+    <%= content_tag :div, value, class: "text-center alert alert-danger" %>
+  <% else %>
+    <%= content_tag :div, value, class: "text-center alert alert-success" %>
+  <% end %>
+<% end %>
+
+<%= yield %>
+
+</body>
+</html>
