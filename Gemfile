@@ -54,3 +54,6 @@ gem 'stripe', :git => 'https://github.com/stripe/stripe-ruby'
 
 # Simple app configuration for api keys and shit
 gem 'figaro'
+
+# admin dashboard
+gem 'rails_admin'

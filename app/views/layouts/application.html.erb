@@ -11,12 +11,14 @@
   // ...
   </script>
   <link rel="stylesheet" href="http://framework.getsprk.com/poptart/v1.0/cherry.min.css" media="screen">
-  <%= csrf_meta_tags %>
+  <!-- <%= csrf_meta_tags %> -->
 
 </head>
 <body class="poptart">
   <% if current_user %>
-    <%= link_to('logout', destroy_user_session_path, :method => :delete, :confirm => 'Are you sure?') %>
+    <div id="name">
+      Welcome <%= current_user.email %> | <%= link_to('settings', settings_user_payments_path) %> | <%= link_to('logout', destroy_user_session_path, :method => :delete, :confirm => 'Are you sure?') %>
+    </div>
   <% else %>
     <%= link_to('login', new_user_session_path) %> or <%= link_to('signup', new_user_registration_path) %>
   <% end %>

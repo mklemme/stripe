@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   devise_for :users
 
   # The priority is based upon order of creation: first created -> highest priority.
@@ -10,6 +11,12 @@ Rails.application.routes.draw do
 
   get 'payment/new', to: "charges#new", as: 'payment_index'
   post 'payment/new', to: "charges#create", as: 'charges'
+
+  get 'settings/trainer/payments', to: "trainer#payment_info", as: 'settings_trainer_payments'
+  post 'settings/trainer/payments', to: "trainer#update", as: 'settings_trainer_payments_update'
+
+  get 'settings/payments', to: "user#payment_info", as: 'settings_user_payments'
+  post 'settings/payments', to: "user#payment_update", as: 'settings_user_payments_update'
 
 
   # Example of regular route:

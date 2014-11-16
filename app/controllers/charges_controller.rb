@@ -1,10 +1,16 @@
 class ChargesController < ApplicationController
+  after_action :send_payment_general, only: [:create]
+
   def new
   end
 
   def create
+    
+    @trainer = Trainer.find_by_id(1)
+    @amount = "10"
     # Set your secret key: remember to change this to your live secret key in production
     # See your keys here https://dashboard.stripe.com/account
+
     Stripe.api_key = Figaro.env.stripe_api_key
 
     # Get the credit card details submitted by the form
@@ -16,14 +22,21 @@ class ChargesController < ApplicationController
         :amount => 1000, # amount in cents, again
         :currency => "usd",
         :card => token,
-        :description => "payinguser@example.com"
+        :description => @user.email
       )
+
 
       rescue Stripe::CardError => e
         flash[:error] = e.message
         redirect_to event_path(@event)
     end
-    flash.now[:notice] = "OK"
-    redirect_to root_path
+    redirect_to root_path, notice: "OK"
+  end
+
+  private
+
+
+  def send_payment_general
+    UserMailer.payment_general(@user.id, @amount).deliver
   end
 end
