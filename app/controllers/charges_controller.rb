@@ -8,15 +8,14 @@ class ChargesController < ApplicationController
   def create
     @user = current_user
     @trainer = Trainer.find_by_id(1)
-    @amount = params[:charge_amount]
-    last_4_digits = params[:last_4]
-    charge_amount = (params[:charge_amount].to_d * 100).to_i
+
+    @amount = payment_params["charge_amount"].to_i / 100
+    last_4_digits = payment_params["last_4"]
+    amount = payment_params["charge_amount"]
 
     Stripe.api_key = Figaro.env.stripe_api_key
 
-    if params[:charge_amount] == ""
-      render "new", error: "You focking wot m8?"
-    end
+
 
     # Get the credit card details submitted by the form
     if @user.stripe_id?
@@ -27,7 +26,7 @@ class ChargesController < ApplicationController
 
       begin
         charge = Stripe::Charge.create(
-          :amount => charge_amount, # amount in cents, again
+          :amount => amount, # amount in cents, again
           :currency => "usd",
           :customer => token,
           :description => @user.email
@@ -38,8 +37,7 @@ class ChargesController < ApplicationController
           redirect_to event_path(@event)
 
       end
-
-      redirect_to root_path, notice: "Your new card was saved and charged for #{@amount}"
+      redirect_to root_path, notice: "Your card was charged for #{@amount}"
 
     # If customer hasn't been created
     else
@@ -53,7 +51,7 @@ class ChargesController < ApplicationController
       )
 
       charge = Stripe::Charge.create(
-        :amount => charge_amount, # amount in cents, again
+        :amount => amount, # amount in cents, again
         :currency => "usd",
         :card => token,
         :description => current_user.email
@@ -74,6 +72,10 @@ class ChargesController < ApplicationController
   end
 
   private
+
+  def payment_params
+    params.require(:user).permit(:stripe_token, :last_4, :charge_amount)
+  end
 
   def send_payment_general
     UserMailer.payment_general(@user.id, @amount).deliver
